@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+/* eslint-env node */
 
 import { register } from 'register-service-worker'
 
