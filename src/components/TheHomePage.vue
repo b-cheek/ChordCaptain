@@ -14,7 +14,7 @@ const navigateTo = (path: string) => {
   </header>
 
   <main>
-    <button>New Exercise</button>
+    <button @click="navigateTo('newExercise')">New Exercise</button>
     <button>Load Exercise</button>
     <button @click="navigateTo('about')">About</button>
   </main>

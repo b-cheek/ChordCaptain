@@ -5,13 +5,15 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import App from './App.vue'
 import Home from './components/TheHomePage.vue'
 import About from './components/TheAboutPage.vue'
+import NewExercise from './components/TheNewExercisePage.vue'
 
 // 2. Define some routes
 // Each route should map to a component.
 // We'll talk about nested routes later.
 const routes = [
   { path: '/', component: Home },
-  { path: '/about', component: About }
+  { path: '/about', component: About },
+  { path: '/newExercise', component: NewExercise}
 ]
 
 // 3. Create the router instance and pass the `routes` option
