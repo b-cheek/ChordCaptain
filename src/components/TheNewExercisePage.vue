@@ -24,7 +24,13 @@
             <label for="numMeasures">Number of Measures</label>
             <input id="numMeasures" type="number" />
             <label for="keySignature">Key Signature</label>
-            <input id="keySignature" type="text" />
+            <select id="keySignature">
+                <option value="4/4">4/4</option>
+                <option value="3/4">3/4</option>
+                <option value="2/4">2/4</option>
+                <option value="2/2">2/2</option>
+                <option value="5/4">5/4</option>
+            </select>
             <fieldset>
                 <legend>Range</legend>
                 <label for="bottomNote">Bottom Note</label>
