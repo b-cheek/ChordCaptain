@@ -6,6 +6,7 @@ import App from './App.vue'
 import Home from './components/TheHomePage.vue'
 import About from './components/TheAboutPage.vue'
 import NewExercise from './components/TheNewExercisePage.vue'
+import Exercise from './components/TheExercisePage.vue'
 
 // 2. Define some routes
 // Each route should map to a component.
@@ -13,7 +14,8 @@ import NewExercise from './components/TheNewExercisePage.vue'
 const routes = [
   { path: '/', component: Home },
   { path: '/about', component: About },
-  { path: '/newExercise', component: NewExercise}
+  { path: '/newExercise', component: NewExercise },
+  { path: '/exercise/:id', component: Exercise }
 ]
 
 // 3. Create the router instance and pass the `routes` option
