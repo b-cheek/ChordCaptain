@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.app.json",
   "exclude": [],
+  "include": ["src/**/*"], // Added so the composite setting works
   "compilerOptions": {
     "composite": true,
     "lib": [],

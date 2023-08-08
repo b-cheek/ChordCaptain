@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import ExerciseForm from './TheExerciseForm.vue'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-
-const navigateTo = (path: string) => {
-  router.push(path)
-}
+import ExerciseForm from '../components/TheExerciseForm.vue'
 </script>
 
 <template>

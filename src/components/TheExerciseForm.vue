@@ -1,21 +1,20 @@
 <script setup lang="ts">
+// Routing here is programmatic to tie it to the submission of the form
 import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 
 const router = useRouter()
-
-const navigateTo = (path: string) => {
-  router.push(path)
-}
+const exerciseName = ref('')
 
 function submit() {
-    navigateTo('exercise/1')
+  router.push(`/exercise/${exerciseName.value}`)
 }
 </script>
 
 <template>
   <form @submit.prevent="submit">
     <label for="exerciseName">Name</label>
-    <input id="exerciseName" type="text" />
+    <input v-model="exerciseName" id="exerciseName" type="text" />
     <fieldset>
       <legend>Clef</legend>
       <input type="radio" id="treble" name="clef" />
