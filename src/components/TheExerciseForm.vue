@@ -2,11 +2,15 @@
 // Routing here is programmatic to tie it to the submission of the form
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
+import pb from '../database/db'
 
 const router = useRouter()
 const exerciseName = ref('')
 
-function submit() {
+async function submit() {
+  const record = await pb.collection('exercises').create({
+    title: exerciseName.value
+  })
   router.push(`/exercise/${exerciseName.value}`)
 }
 </script>

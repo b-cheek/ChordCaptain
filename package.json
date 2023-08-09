@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "abcjs": "^6.2.2",
+    "pocketbase": "^0.16.0",
     "register-service-worker": "^1.7.2",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4"
