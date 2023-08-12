@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import ExerciseForm from '../components/TheExerciseForm.vue'
+import ExerciseForm from '@/components/TheExerciseForm.vue'
+// import ExerciseFormKit from '@/components/TheExerciseFormKit.vue'
 </script>
 
 <template>

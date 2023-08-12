@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Exercise from '../components/TheExercise.vue'
+import Exercise from '@/components/TheExercise.vue'
 </script>
 
 <template>

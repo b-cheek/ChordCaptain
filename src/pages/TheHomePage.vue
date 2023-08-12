@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import pb from '../database/db'
+import pb from '@/database/db'
 async function auth() {
   const authData = await pb.collection('users').authWithPassword('users65522', 'passtest')
   console.log(pb.authStore.isValid)
