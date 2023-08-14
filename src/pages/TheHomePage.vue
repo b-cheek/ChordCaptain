@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import ChordCaptainIcon from '@/components/icons/IconChordCaptain.vue'
 import pb from '@/database/db'
 </script>
 
 <template>
   <header>
-    <img alt="ChordCaptain logo" class="logo" src="@/assets/ChordCaptain_logo.svg" />
+    <ChordCaptainIcon />
   </header>
 
   <main>
@@ -16,11 +17,4 @@ import pb from '@/database/db'
   </main>
 </template>
 
-<style scoped>
-.logo {
-  width: 125px;
-  height: 125px;
-  display: block;
-  margin: 0 auto 2rem;
-}
-</style>
+<style scoped></style>

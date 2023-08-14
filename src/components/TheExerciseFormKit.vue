@@ -16,26 +16,19 @@ async function handleSubmit() {
 </script>
 
 <template>
-    <FormKit 
-        type="form"
-        submit-label="Continue"
-        @submit="handleSubmit()"
-    >
-        <FormKit 
-            type="text"
-            label="Name"
-        />
-        <FormKit
-            type="radio"
-            name="clef"
-            label="Clef"
-            :options="{
-                treble: 'Treble',
-                bass: 'Bass',
-                grandStaff: 'Grand Staff'
-            }"
-        />
-    </FormKit>
+  <FormKit type="form" submit-label="Continue" @submit="handleSubmit()">
+    <FormKit type="text" label="Name" />
+    <FormKit
+      type="radio"
+      name="clef"
+      label="Clef"
+      :options="{
+        treble: 'Treble',
+        bass: 'Bass',
+        grandStaff: 'Grand Staff'
+      }"
+    />
+  </FormKit>
 </template>
 
 <style scoped></style>
