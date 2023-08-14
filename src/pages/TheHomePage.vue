@@ -1,27 +1,17 @@
 <script setup lang="ts">
 import pb from '@/database/db'
-async function auth() {
-  const authData = await pb.collection('users').authWithPassword('users65522', 'passtest')
-  console.log(pb.authStore.isValid)
-  console.log(pb.authStore.token)
-  console.log(pb.authStore)
-}
 </script>
 
 <template>
   <header>
-    <img alt="ChordCaptain logo" class="logo" src="../assets/ChordCaptain_logo.svg" />
+    <img alt="ChordCaptain logo" class="logo" src="@/assets/ChordCaptain_logo.svg" />
   </header>
 
   <main>
-    <!-- <button @click="navigateTo('newExercise')">New Exercise</button>
-    <button>Load Exercise</button>
-    <button @click="navigateTo('about')">About</button> -->
     <router-link to="/newExercise">New Exercise</router-link>
     <!-- <router-link to="/loadExercise">Load Exercise</router-link> -->
     <router-link to="/about">About</router-link>
-    <router-link to="/signup">Signup</router-link>
-    <button @click="auth()">debug auth</button>
+    <router-link to="/signin">Sign In</router-link>
     <button @click="pb.authStore.clear()">Logout</button>
   </main>
 </template>
