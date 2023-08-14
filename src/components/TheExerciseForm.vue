@@ -18,7 +18,7 @@ async function submit() {
 <template>
   <form @submit.prevent="submit">
     <label for="exerciseName">Name</label>
-    <input v-model="exerciseName" id="exerciseName" type="text" />
+    <input id="exerciseName" type="text" v-model="exerciseName" />
     <fieldset>
       <legend>Clef</legend>
       <input type="radio" id="treble" name="clef" />

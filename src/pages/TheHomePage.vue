@@ -20,6 +20,7 @@ async function auth() {
     <router-link to="/newExercise">New Exercise</router-link>
     <!-- <router-link to="/loadExercise">Load Exercise</router-link> -->
     <router-link to="/about">About</router-link>
+    <router-link to="/signup">Signup</router-link>
     <button @click="auth()">debug auth</button>
     <button @click="pb.authStore.clear()">Logout</button>
   </main>
