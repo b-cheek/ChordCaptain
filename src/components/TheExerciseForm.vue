@@ -22,7 +22,7 @@ async function submit() {
   try {
     // The database throws an error if the user is not logged in, so
     // We know that pb.authStore is valid
-    const record = await pb.collection('exercises').create({
+    await pb.collection('exercises').create({
       title: exerciseName.value,
       clef: clef.value,
       numMeasures: numMeasures.value,
@@ -37,9 +37,10 @@ async function submit() {
       base_rhythm: base_rhythm.value,
       user: pb.authStore.model!.id
     })
-    await pb.collection('users').update(pb.authStore.model!.id, {
-      'exercises+': record.id
-    })
+    // I guess it's better to just use the single relation from the child?
+    // await pb.collection('users').update(pb.authStore.model!.id, {
+    //   'exercises+': record.id
+    // })
     router.push(`/exercise/${exerciseName.value}`)
   } catch (e) {
     alert('Invalid fields')
@@ -107,9 +108,21 @@ async function submit() {
     </select>
     <fieldset>
       <legend>Exercise Type</legend>
-      <input type="radio" id="stepwise" name="exerciseType" value="stepwise" v-model="exercise_type" />
+      <input
+        type="radio"
+        id="stepwise"
+        name="exerciseType"
+        value="stepwise"
+        v-model="exercise_type"
+      />
       <label for="stepwise">Stepwise</label>
-      <input type="radio" id="arpeggiated" name="exerciseType" value="arpeggiated" v-model="exercise_type" />
+      <input
+        type="radio"
+        id="arpeggiated"
+        name="exerciseType"
+        value="arpeggiated"
+        v-model="exercise_type"
+      />
       <label for="arpeggiated">Arpeggiated</label>
       <input type="radio" id="mixed" name="exerciseType" value="mixed" v-model="exercise_type" />
       <label for="mixed">Mixed</label>
@@ -120,7 +133,13 @@ async function submit() {
       <label for="one">1</label>
       <input type="radio" id="two" name="chordsPerMeasure" value="2" v-model="chords_per_measure" />
       <label for="two">2</label>
-      <input type="radio" id="custom" name="chordsPerMeasure" value="custom" v-model="chords_per_measure" />
+      <input
+        type="radio"
+        id="custom"
+        name="chordsPerMeasure"
+        value="custom"
+        v-model="chords_per_measure"
+      />
       <label for="custom">Custom</label>
     </fieldset>
     <label for="playbackBpm">Playback BPM</label>

@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import ChordCaptainIcon from '@/components/icons/IconChordCaptain.vue'
 import pb from '@/database/db'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
+
+function logout() {
+  userStore.clear()
+  pb.authStore.clear()
+}
 </script>
 
 <template>
@@ -13,7 +21,7 @@ import pb from '@/database/db'
     <!-- <router-link to="/loadExercise">Load Exercise</router-link> -->
     <router-link to="/about">About</router-link>
     <router-link to="/signin">Sign In</router-link>
-    <button @click="pb.authStore.clear()">Logout</button>
+    <button @click="logout">Logout</button>
   </main>
 </template>
 

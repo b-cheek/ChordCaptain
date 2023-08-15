@@ -2,6 +2,9 @@
 import { ref } from 'vue'
 import pb from '@/database/db'
 import router from '@/router/router'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
 
 const email = ref('')
 const password = ref('')
@@ -16,7 +19,10 @@ async function register() {
     })
 
     // Can't think of a reason this would throw an error
-    await pb.collection('users').authWithPassword(email.value, password.value)
+    const authRecord = await pb.collection('users').authWithPassword(email.value, password.value)
+    if (authRecord) {
+      userStore.userID = authRecord.record.id
+    }
     router.push('/')
   } catch (e) {
     alert('Invalid Credentials')

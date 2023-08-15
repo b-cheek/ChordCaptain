@@ -8,7 +8,7 @@ const router = useRouter()
 const exerciseName = ref('')
 
 async function handleSubmit() {
-  const record = await pb.collection('exercises').create({
+  await pb.collection('exercises').create({
     title: exerciseName.value
   })
   router.push(`/exercise/${exerciseName.value}`)

@@ -17,7 +17,9 @@
   },
   "dependencies": {
     "@formkit/vue": "^0.18.0",
+    "@vueuse/core": "^10.3.0",
     "abcjs": "^6.2.2",
+    "pinia": "^2.1.6",
     "pocketbase": "^0.16.0",
     "register-service-worker": "^1.7.2",
     "vue": "^3.3.4",
