@@ -24,7 +24,18 @@ for (let i = 0; i < exercise.num_measures; i++) {
 }
 
 onMounted(() => {
-  abcjs.renderAbc('exerciseContainer', abcString)
+  abcjs.renderAbc('exerciseContainer', abcString, {
+    wrap:
+      {
+        minSpacing: 1.8, // Values from docs: https://paulrosen.github.io/abcjs/visual/render-abc-options.html#wrap
+        maxSpacing: 2.7,
+        preferredMeasuresPerLine: 4
+      },
+      // Staffwidth MUST be set for wrap to work. It is overridden by the responsive option.
+      // Also note that we are guaranteeing that 'exerciseContainer' is mounted by using onMounted
+      staffwidth: document.getElementById('exerciseContainer')!.clientWidth * 0.95,
+      responsive: 'resize'
+  })
 })
 </script>
 
