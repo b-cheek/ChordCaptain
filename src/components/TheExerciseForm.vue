@@ -5,9 +5,10 @@ import { ref } from 'vue'
 import pb from '@/database/db'
 
 const router = useRouter()
+
 const exerciseName = ref('')
 const clef = ref('')
-const numMeasures = ref(0)
+const num_measures = ref(0)
 const key_tonic = ref('')
 const key_mode = ref('')
 const meter = ref('')
@@ -16,16 +17,16 @@ const top_note = ref('')
 const exercise_type = ref('')
 const chords_per_measure = ref('')
 const playback_bpm = ref(0)
-const base_rhythm = ref(0)
+const base_rhythm = ref('')
 
 async function submit() {
   try {
     // The database throws an error if the user is not logged in, so
     // We know that pb.authStore is valid
-    await pb.collection('exercises').create({
+    const record = await pb.collection('exercises').create({
       title: exerciseName.value,
       clef: clef.value,
-      numMeasures: numMeasures.value,
+      num_measures: num_measures.value,
       key_tonic: key_tonic.value.toUpperCase(),
       key_mode: key_mode.value,
       meter: meter.value,
@@ -41,7 +42,7 @@ async function submit() {
     // await pb.collection('users').update(pb.authStore.model!.id, {
     //   'exercises+': record.id
     // })
-    router.push(`/exercise/${exerciseName.value}`)
+    router.push(`/exercise/${record.id}`)
   } catch (e) {
     alert('Invalid fields')
     console.error(e)
@@ -63,7 +64,7 @@ async function submit() {
       <label for="grandStaff">Grand Staff</label>
     </fieldset>
     <label for="numMeasures">Number of Measures</label>
-    <input id="numMeasures" type="number" v-model.number="numMeasures" />
+    <input id="numMeasures" type="number" v-model.number="num_measures" />
     <fieldset>
       <legend>Key</legend>
       <label for="key_tonic">Tonic</label>
@@ -146,11 +147,11 @@ async function submit() {
     <input id="playbackBpm" type="number" v-model.number="playback_bpm" />
     <fieldset>
       <legend>Rhythm</legend>
-      <input type="radio" id="8" name="rhythm" value="8" v-model.number="base_rhythm" />
+      <input type="radio" id="8" name="rhythm" value="1/8" v-model="base_rhythm" />
       <label for="8">Eighth Notes</label>
-      <input type="radio" id="16" name="rhythm" value="16" v-model.number="base_rhythm" />
+      <input type="radio" id="16" name="rhythm" value="1/16" v-model="base_rhythm" />
       <label for="16">Sixteenth Notes</label>
-      <input type="radio" id="4" name="rhythm" value="4" v-model.number="base_rhythm" />
+      <input type="radio" id="4" name="rhythm" value="1/4" v-model="base_rhythm" />
       <label for="4">Quarter Notes</label>
     </fieldset>
     <input type="submit" value="Continue" />

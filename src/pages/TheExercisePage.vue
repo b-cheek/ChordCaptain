@@ -4,7 +4,9 @@ import Exercise from '@/components/TheExercise.vue'
 
 <template>
   <main>
-    <Exercise />
+    <Suspense> <!-- Exercise depends on the async access of exercise data from database to render -->
+      <Exercise />
+    </Suspense> <!-- See suspense tag info: https://vuejs.org/guide/built-ins/suspense.html -->
   </main>
 </template>
 

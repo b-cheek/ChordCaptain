@@ -1,19 +1,25 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-import abcjs from 'abcjs'
 import { onMounted } from 'vue'
+import abcjs from 'abcjs'
+import pb from '@/database/db'
+import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const measures = 32
+const exercise = await pb
+  .collection('exercises')
+  .getOne(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id, {
+    expand: 'user'
+  })
 
-let abcString = `X: 1
-T: ${route.params.exerciseName}
-K: none
-M: C
-L: 1/4
+let abcString = `
+X: 1
+T: ${exercise.title}
+K: ${exercise.key_tonic}${exercise.key_mode == 'minor' ? 'm' : ''}
+M: ${exercise.meter}
+L: ${exercise.base_rhythm}
 U: s=!style=rhythm!
 `
-for (let i = 0; i < measures; i++) {
+for (let i = 0; i < exercise.num_measures; i++) {
   abcString += `sB0 sB0 sB0 sB0|`
 }
 
