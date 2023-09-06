@@ -17,6 +17,11 @@ const getSavedExercises = async () => {
     savedExercises.value = records
 }
 
+const formatDate = (Datestring:string) => {
+    const date = new Date(Datestring)
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
+}
+
 onMounted(() => {
     getSavedExercises()
 })
@@ -35,13 +40,14 @@ onMounted(() => {
         </thead>
         <tbody>
             <tr @click="router.push(`/exercise/${exercise.id}`)" v-for="exercise in savedExercises" :key="exercise.id">
-                <td>{{ exercise.created }}</td>
+                <td>{{ formatDate(exercise.created) }}</td>
                 <td>{{ exercise.title }}</td>
                 <td>{{ exercise.key_tonic }} {{ exercise.key_mode }}</td>
                 <td>{{ exercise.exercise_type }}</td>
             </tr>
         </tbody>
     </table>
+    <p v-if="savedExercises.length === 0">No saved exercises</p>
 </template>
 
 <style scoped>

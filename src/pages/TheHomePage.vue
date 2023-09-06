@@ -23,7 +23,7 @@ function logout() {
     <router-link to="/about">About</router-link>
     <router-link to="/signin">Sign In</router-link>
     <button @click="logout">Logout</button>
-    <SavedExercises />
+    <SavedExercises v-if="userStore.userID"/> <!-- Only show if logged in -->
   </main>
 </template>
 
