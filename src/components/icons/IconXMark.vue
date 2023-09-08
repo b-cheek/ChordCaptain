@@ -15,7 +15,7 @@
 
 <style scoped>
 svg {
-    width: 1em;
-    height: auto;
+  width: 1em;
+  height: auto;
 }
 </style>

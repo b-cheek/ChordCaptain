@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import XMark from '@/components/icons/IconXMark.vue'
+import { useExerciseStore } from '@/stores/exercise'
+import XMarkIcon from '@/components/icons/IconXMark.vue'
 import pb from '@/database/db'
 
 const router = useRouter()
+const exerciseStore = useExerciseStore()
 
 const props = defineProps<{
   exercise: {
@@ -49,6 +51,8 @@ const deleteExercise = async () => {
     <td>{{ exercise.title }}</td>
     <td>{{ exercise.key_tonic }} {{ exercise.key_mode }}</td>
     <td>{{ exercise.exercise_type }}</td>
-    <td ref="deleteCell"><button @click="deleteExercise()"><XMark /></button></td>
+    <td ref="deleteCell">
+      <button @click="deleteExercise()"><XMarkIcon /></button>
+    </td>
   </tr>
 </template>
