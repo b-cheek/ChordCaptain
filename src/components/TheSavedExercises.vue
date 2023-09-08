@@ -22,7 +22,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <table>
+  <table id="savedExercises">
     <thead>
       <tr>
         <th>Created</th>
