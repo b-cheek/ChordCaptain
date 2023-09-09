@@ -19,7 +19,20 @@ export const useExerciseStore = defineStore('exercise', () => {
   const baseRhythm = ref(useLocalStorage('baseRhythm', ''))
 
   // Actions
-  function loadNew() {}
+  function loadNew() {
+    exerciseName.value = 'New Exercise'
+    clef.value = 'treble'
+    numMeasures.value = 16
+    keyTonic.value = 'Bb'
+    keyMode.value = 'major'
+    meter.value = '4/4'
+    bottomNote.value = 'C3'
+    topNote.value = 'C5'
+    exerciseType.value = 'stepwise'
+    chordsPerMeasure.value = '2'
+    playbackBpm.value = 120
+    baseRhythm.value = '1/4'
+  }
 
   function loadExisting(exercise: ExerciseOptions) {
     exerciseName.value = exercise.exerciseName

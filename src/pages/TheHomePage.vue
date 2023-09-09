@@ -18,8 +18,7 @@ function logout() {
   </header>
 
   <main>
-    <router-link to="/newExercise">New Exercise</router-link>
-    <!-- <router-link to="/loadExercise">Load Exercise</router-link> -->
+    <router-link to="/exercise/new">New Exercise</router-link>
     <router-link to="/about">About</router-link>
     <router-link to="/signin">Sign In</router-link>
     <button @click="logout">Logout</button>
