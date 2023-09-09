@@ -8,6 +8,7 @@ import { useExerciseStore } from '@/stores/exercise'
 import SettingsIcon from '@/components/icons/IconSettings.vue'
 import ExerciseSettings from '@/components/TheExerciseSettings.vue'
 import type { ExerciseOptions } from '@/models/exerciseTypes'
+import { formatDate } from '@/utils/formatting'
 
 const route = useRoute()
 const exercise = await pb
@@ -19,7 +20,7 @@ const exercise = await pb
 const localExercise = useExerciseStore()
 
 if (localExercise.exerciseName == '') {
-  // Check if the store is empty
+  // Check if the store is empty, will persist for page reload but is cleared after leaving exercise
   localExercise.loadExisting({
     exerciseName: exercise.title,
     clef: exercise.clef,
@@ -37,6 +38,7 @@ if (localExercise.exerciseName == '') {
 }
 
 let showSettings = ref(false)
+let lastSaved = ref(formatDate(exercise.updated))
 
 let computedAbc = computed(() => {
   let abcString = `
@@ -72,6 +74,24 @@ const toggleSettings = () => {
   if (!showSettings.value) loadAbc()
 }
 
+const saveExercise= () => {
+  pb.collection('exercises').update(exercise.id, {
+    title: localExercise.exerciseName,
+    clef: localExercise.clef,
+    num_measures: localExercise.numMeasures,
+    key_tonic: localExercise.keyTonic,
+    key_mode: localExercise.keyMode,
+    meter: localExercise.meter,
+    bottom_note: localExercise.bottomNote,
+    top_note: localExercise.topNote,
+    exercise_type: localExercise.exerciseType,
+    chords_per_measure: localExercise.chordsPerMeasure,
+    playback_bpm: localExercise.playbackBpm,
+    base_rhythm: localExercise.baseRhythm
+  })
+  lastSaved.value = formatDate(new Date())
+}
+
 onMounted(() => {
   loadAbc()
 })
@@ -79,6 +99,8 @@ onMounted(() => {
 
 <template>
   <button @click="toggleSettings" id="settingsButton"><SettingsIcon /></button>
+  <button @click="saveExercise">Save</button>
+  <span>Last saved at {{ lastSaved }}</span>
   <div id="exerciseContainer"></div>
   <div id="settingsContainer" v-show="showSettings">
     <ExerciseSettings />

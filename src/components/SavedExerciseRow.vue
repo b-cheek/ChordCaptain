@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useExerciseStore } from '@/stores/exercise'
 import XMarkIcon from '@/components/icons/IconXMark.vue'
 import pb from '@/database/db'
+import { formatDate } from '@/utils/formatting'
 
 const router = useRouter()
 const exerciseStore = useExerciseStore()
@@ -27,11 +28,6 @@ const goToExercise = (e: Event) => {
   if (!deleteCell.value?.contains(e.target as HTMLElement)) {
     router.push(`/exercise/${props.exercise.id}`)
   }
-}
-
-const formatDate = (Datestring: string) => {
-  const date = new Date(Datestring)
-  return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
 }
 
 const deleteExercise = async () => {
