@@ -46,12 +46,10 @@ else {
   } as ExerciseOptions)
 }
 
-let chordList = computed(() => {
-  return new Array(localExercise.numMeasures * Number(localExercise.meter.split('/')[0])).fill('')
-})
+localExercise.setChords()
 
 let computedAbc = computed(() => {
-  return writeAbc(localExercise as ExerciseOptions, chordList.value)
+  return writeAbc(localExercise as ExerciseOptions, localExercise.chords.list)
 })
 
 let showSettings = ref(false)

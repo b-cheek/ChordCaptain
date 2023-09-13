@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
 import type { ExerciseOptions } from '@/models/exerciseTypes'
+import { chordList } from '@/utils/abc'
 
 export const useExerciseStore = defineStore('exercise', () => {
   // State variables
@@ -18,6 +19,8 @@ export const useExerciseStore = defineStore('exercise', () => {
   const playbackBpm = ref(useLocalStorage('playbackBpm', 0))
   const baseRhythm = ref(useLocalStorage('baseRhythm', ''))
 
+  const chords = ref(useLocalStorage('chords', new chordList()))
+
   // Actions
   function loadNew() {
     exerciseName.value = 'New Exercise'
@@ -32,6 +35,10 @@ export const useExerciseStore = defineStore('exercise', () => {
     chordsPerMeasure.value = '2'
     playbackBpm.value = 120
     baseRhythm.value = '1/4'
+  }
+
+  function setChords() {
+    chords.value.list = new Array(numMeasures.value * Number(meter.value.split('/')[0])).fill('')
   }
 
   function loadExisting(exercise: ExerciseOptions) {
@@ -62,6 +69,7 @@ export const useExerciseStore = defineStore('exercise', () => {
     chordsPerMeasure.value = ''
     playbackBpm.value = 0
     baseRhythm.value = ''
+    chords.value = new chordList()
   }
 
   return {
@@ -77,6 +85,8 @@ export const useExerciseStore = defineStore('exercise', () => {
     chordsPerMeasure,
     playbackBpm,
     baseRhythm,
+    chords,
+    setChords,
     loadNew,
     loadExisting,
     clear

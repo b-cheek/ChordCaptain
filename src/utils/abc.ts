@@ -1,4 +1,5 @@
 import type { ExerciseOptions } from "@/models/exerciseTypes"
+import { useExerciseStore } from "@/stores/exercise"
 import abcjs from 'abcjs'
 
 export const writeAbc = (localExercise: ExerciseOptions, chordList: string[]) => {
@@ -35,7 +36,12 @@ U: s=!style=rhythm!
 
 const clickHandler = (abcelem: any, tuneNumber: number, classes: string, analysis: any, drag: any) => {
   console.log("abcelem:", abcelem, "\ntuneNumber:", tuneNumber, "\nclasses:", classes, "\nanalysis:", analysis, "\ndrag:", drag)
-  // abcelem.invisible = true
+  const classList = classes.split(' ')
+  console.log(classList[5], classList[7])
+  const index = Number(classList[5].slice(8))*3 + Number(classList[7].slice(7))
+  const exercise = useExerciseStore()
+  exercise.chords.list[index] = "Bb7"
+  
 }
 
 export const loadAbc = (target: string, abcString: string) => {
@@ -54,5 +60,15 @@ export const loadAbc = (target: string, abcString: string) => {
     // selectTypes: [],
     jazzchords: true,
     clickListener: clickHandler,
+    add_classes: true,
   })
+}
+
+export class chordList {
+  list: string[]
+
+  constructor(exercise?: ExerciseOptions) {
+    if (exercise) this.list = new Array(exercise.numMeasures * Number(exercise.meter.split('/')[0])).fill('')
+    else this.list = []
+  }
 }
