@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { onMounted } from 'vue'
-import abcjs from 'abcjs'
 import pb from '@/database/db'
 import { useRoute } from 'vue-router'
 import { useExerciseStore } from '@/stores/exercise'
@@ -11,12 +10,13 @@ import ExerciseSettings from '@/components/TheExerciseSettings.vue'
 import type { ExerciseOptions } from '@/models/exerciseTypes'
 import { formatDate } from '@/utils/formatting'
 import router from '@/router/router'
+import { writeAbc, loadAbc } from '@/utils/abc'
 
 const route = useRoute()
 const localExercise = useExerciseStore()
 const userStore = useUserStore()
 const lastSaved = ref('')
-console.log(route.params.id)
+let visualObj: any
 if (!route.params.id) {
   localExercise.loadNew()
 }
@@ -46,40 +46,19 @@ else {
   } as ExerciseOptions)
 }
 
-let showSettings = ref(false)
-
-let computedAbc = computed(() => {
-  let abcString = `
-X: 1
-T: ${localExercise.exerciseName}
-K: ${localExercise.keyTonic}${localExercise.keyMode == 'minor' ? 'm' : ''}
-M: ${localExercise.meter}
-L: ${localExercise.baseRhythm}
-U: s=!style=rhythm!
-`
-  for (let i = 0; i < localExercise.numMeasures; i++) {
-    abcString += `sB0 sB0 sB0 sB0|`
-  }
-  return abcString
+let chordList = computed(() => {
+  return new Array(localExercise.numMeasures * Number(localExercise.meter.split('/')[0])).fill('')
 })
 
-const loadAbc = () => {
-  abcjs.renderAbc('exerciseContainer', computedAbc.value, {
-    wrap: {
-      minSpacing: 1.8, // Values from docs: https://paulrosen.github.io/abcjs/visual/render-abc-options.html#wrap
-      maxSpacing: 2.7,
-      preferredMeasuresPerLine: 4
-    },
-    // Staffwidth MUST be set for wrap to work. It is overridden by the responsive option.
-    // Also note that we are guaranteeing that 'exerciseContainer' is mounted by using onMounted
-    staffwidth: document.getElementById('exerciseContainer')!.clientWidth * 0.95,
-    responsive: 'resize'
-  })
-}
+let computedAbc = computed(() => {
+  return writeAbc(localExercise as ExerciseOptions, chordList.value)
+})
+
+let showSettings = ref(false)
 
 const toggleSettings = () => {
   showSettings.value = !showSettings.value
-  if (!showSettings.value) loadAbc()
+  if (!showSettings.value) visualObj = loadAbc('exerciseContainer', computedAbc.value)
 }
 
 const saveExercise = async() => {
@@ -121,8 +100,12 @@ const saveExercise = async() => {
   lastSaved.value = formatDate(new Date().toString())
 }
 
+const debug = () => {
+  console.log(visualObj)
+}
+
 onMounted(() => {
-  loadAbc()
+  visualObj = loadAbc('exerciseContainer', computedAbc.value)[0]
 })
 </script>
 
@@ -131,6 +114,7 @@ onMounted(() => {
   <button @click="saveExercise" :disabled="!userStore.userID">Save</button>
   <span v-if="lastSaved">Last saved at {{ lastSaved }}</span>
   <span v-if="!userStore.userID">Log in to save exercises</span>
+  <button @click="debug">debug</button>
   
   <div id="exerciseContainer"></div>
   <div id="settingsContainer" v-show="showSettings">
