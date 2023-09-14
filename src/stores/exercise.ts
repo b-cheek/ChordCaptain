@@ -35,13 +35,14 @@ export const useExerciseStore = defineStore('exercise', () => {
     chordsPerMeasure.value = '2'
     playbackBpm.value = 120
     baseRhythm.value = '1/4'
+    chords.value.list = new Array(numMeasures.value * Number(meter.value.split('/')[0])).fill('')
   }
 
   function setChords() {
     chords.value.list = new Array(numMeasures.value * Number(meter.value.split('/')[0])).fill('')
   }
 
-  function loadExisting(exercise: ExerciseOptions) {
+  function loadExisting(exercise: ExerciseOptions, chordString: string) {
     exerciseName.value = exercise.exerciseName
     clef.value = exercise.clef
     numMeasures.value = exercise.numMeasures
@@ -54,6 +55,7 @@ export const useExerciseStore = defineStore('exercise', () => {
     chordsPerMeasure.value = exercise.chordsPerMeasure
     playbackBpm.value = exercise.playbackBpm
     baseRhythm.value = exercise.baseRhythm
+    chords.value.list = chordString.split(',')
   }
 
   function clear() {

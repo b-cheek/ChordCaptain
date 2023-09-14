@@ -43,10 +43,8 @@ else {
     chordsPerMeasure: exercise.chords_per_measure,
     playbackBpm: exercise.playback_bpm,
     baseRhythm: exercise.base_rhythm
-  } as ExerciseOptions)
+  } as ExerciseOptions, exercise.chordString)
 }
-
-localExercise.setChords()
 
 let computedAbc = computed(() => {
   return writeAbc(localExercise as ExerciseOptions, localExercise.chords.list)
@@ -74,7 +72,8 @@ const saveExercise = async() => {
       chords_per_measure: localExercise.chordsPerMeasure,
       playback_bpm: localExercise.playbackBpm,
       base_rhythm: localExercise.baseRhythm,
-      user: pb.authStore.model!.id
+      user: pb.authStore.model!.id,
+      chordString: localExercise.chords.list.join(',')
     })
     router.push(`/exercise/${record.id}`)
   }
@@ -92,14 +91,15 @@ const saveExercise = async() => {
       exercise_type: localExercise.exerciseType,
       chords_per_measure: localExercise.chordsPerMeasure,
       playback_bpm: localExercise.playbackBpm,
-      base_rhythm: localExercise.baseRhythm
+      base_rhythm: localExercise.baseRhythm,
+      chordString: localExercise.chords.list.join(',')
     })
   }
   lastSaved.value = formatDate(new Date().toString())
 }
 
 const debug = () => {
-  console.log(visualObj)
+  console.log(localExercise.chords.list)
 }
 
 onMounted(() => {
