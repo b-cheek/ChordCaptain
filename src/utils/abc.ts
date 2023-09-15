@@ -40,8 +40,7 @@ const clickHandler = (abcelem: any, tuneNumber: number, classes: string, analysi
   console.log(classList[5], classList[7])
   const exercise = useExerciseStore()
   const index = Number(classList[5].slice(8))*Number(exercise.meter.split('/')[0]) + Number(classList[7].slice(7))
-  exercise.chords.list[index] = "Bb7"
-  
+  exercise.selectedChordIndex = index
 }
 
 export const loadAbc = (target: string, abcString: string) => {

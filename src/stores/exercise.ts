@@ -20,6 +20,7 @@ export const useExerciseStore = defineStore('exercise', () => {
   const baseRhythm = ref(useLocalStorage('baseRhythm', ''))
 
   const chords = ref(useLocalStorage('chords', new chordList()))
+  const selectedChordIndex = ref(-1)
 
   // Actions
   function loadNew() {
@@ -36,6 +37,7 @@ export const useExerciseStore = defineStore('exercise', () => {
     playbackBpm.value = 120
     baseRhythm.value = '1/4'
     chords.value.list = new Array(numMeasures.value * Number(meter.value.split('/')[0])).fill('')
+    selectedChordIndex.value = -1
   }
 
   function setChords() {
@@ -88,6 +90,7 @@ export const useExerciseStore = defineStore('exercise', () => {
     playbackBpm,
     baseRhythm,
     chords,
+    selectedChordIndex,
     setChords,
     loadNew,
     loadExisting,

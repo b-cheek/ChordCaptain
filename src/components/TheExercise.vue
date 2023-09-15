@@ -98,8 +98,14 @@ const saveExercise = async() => {
   lastSaved.value = formatDate(new Date().toString())
 }
 
+const updateChord = (event: any) => {
+  localExercise.chords.list[localExercise.selectedChordIndex] = event.target.value
+  localExercise.selectedChordIndex = -1
+  visualObj = loadAbc('exerciseContainer', computedAbc.value)
+}
+
 const debug = () => {
-  console.log(localExercise.chords.list)
+  console.log(localExercise.selectedChordIndex)
 }
 
 onMounted(() => {
@@ -118,6 +124,7 @@ onMounted(() => {
   <div id="settingsContainer" v-show="showSettings">
     <ExerciseSettings />
   </div>
+  <input type="text" @change="updateChord">
 </template>
 
 <style scoped>
