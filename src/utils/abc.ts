@@ -1,8 +1,9 @@
 import type { ExerciseOptions } from "@/models/exerciseTypes"
 import { useExerciseStore } from "@/stores/exercise"
 import abcjs from 'abcjs'
+import { Chord, AbcNotation, Note, Core, Interval } from 'tonal'
 
-export const writeAbc = (localExercise: ExerciseOptions, chordList: string[]) => {
+export const writeAbc = (localExercise: ExerciseOptions, chordStringList: string[]) => {
   let abcString = `
 X: 1
 T: ${localExercise.exerciseName}
@@ -20,9 +21,46 @@ U: s=!style=rhythm!
   // abcString += "|"
 
   const meterNumerator = Number(localExercise.meter.split('/')[0])
+  const bottomNote = Note.get(localExercise.bottomNote)
+  const topNote = Note.get(localExercise.topNote)
+  const chordList = chordStringList.map(chordString => Chord.get(chordString))
+  // This way makes chord.notes include the octave 
+  // const chordList = chordStringList.map(chordString => Chord.getChord(Chord.get(chordString).aliases[0], Chord.get(chordString).tonic + "4"))
+  console.log(chordList)
+  // console.log(chordList.map(chord => chord.notes.map(note => AbcNotation.scientificToAbcNotation(note)))) // remove the octave from the note
+  console.log(Interval.num(Interval.distance('D4', 'E')))
+  let ascending = true
+  let lastNote = 'A2'
+  let lastChord = Chord.get('A4')
+  let noteIndex = 0
+  let note
 
-  for (let i=0; i < chordList.length; i++) {
-    abcString += `${chordList[i] && `"${chordList[i]}"`}sB0 `
+  for (let i=0; i < chordStringList.length; i++) {
+    if (chordList[i].symbol && chordList[i].symbol != lastChord.symbol) {
+      let newNoteIndex
+      let newNoteDistance = 13
+      for (let j=0; j<chordList[i].notes.length; j++) {
+        let checkDistance = Interval.semitones(Interval.distance(lastNote, chordList[i].notes[j]))
+        if (checkDistance < newNoteDistance && checkDistance > 1) { // >0 since don't want duplicate
+          newNoteIndex = j
+          newNoteDistance = checkDistance
+        }
+      }
+      noteIndex = newNoteIndex
+      lastChord = chordList[i]
+    }
+
+    else {
+      noteIndex++
+      if (noteIndex==lastChord.notes.length) { // I'm not using mod later because I might want to add some other conditions with octaves in this case depending on implementation
+        noteIndex = 0
+      }
+    }
+    // Uses the transpose function so octaves are handled automatically
+    lastNote = Note.transpose(lastNote, Interval.distance(lastNote, lastChord.notes[noteIndex!]))
+    note = AbcNotation.scientificToAbcNotation(lastNote)
+
+    abcString += `${chordStringList[i] && `"${chordStringList[i]}"`}${note || 'sB0'} ` // use short circuiting to only add the chord if it exists
     if ((i+1)%meterNumerator == 0) {
       abcString += "|"
     }

@@ -124,7 +124,7 @@ onMounted(() => {
   <div id="settingsContainer" v-show="showSettings">
     <ExerciseSettings />
   </div>
-  <input type="text" @change="updateChord">
+  <input type="text" :value="localExercise.chords.list[localExercise.selectedChordIndex]" @change="updateChord">
 </template>
 
 <style scoped>
