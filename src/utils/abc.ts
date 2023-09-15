@@ -36,34 +36,13 @@ U: s=!style=rhythm!
   let noteIndex = 0
   let note
   let newNoteIndex
-  let newNoteDistance
 
   for (let i=0; i < chordStringList.length; i++) {
-    if (chordList[i].symbol && chordList[i].symbol != lastChord.symbol) {
+    let curChord = chordList[i]
+    if (curChord.symbol && curChord.symbol != lastChord.symbol) {
       // Find closest note of new chord to last note
-      if (ascending) {
-        newNoteDistance = 13 // Greater than octave, practical infinity
-        for (let j=0; j<chordList[i].notes.length; j++) {
-          let checkDistance = Interval.semitones(Interval.distance(lastNote, chordList[i].notes[j]))
-          if (checkDistance < newNoteDistance && checkDistance > 0) { // >0 since don't want duplicate
-            newNoteIndex = j
-            newNoteDistance = checkDistance
-          }
-        }
-      }
-      else { // When descending we'll find the greatest interval, which will be the closest in the other direction
-        newNoteDistance = -1 // 
-        for (let j=0; j<chordList[i].notes.length; j++) {
-          let checkDistance = Interval.semitones(Interval.distance(lastNote, chordList[i].notes[j]))
-          if (checkDistance > newNoteDistance) { // the >0 check is no longer needed since we're looking for the greatest interval
-            newNoteIndex = j
-            newNoteDistance = checkDistance
-          }
-        }
-
-      }
+      newNoteIndex = findNearestNote(lastNote, chordList[i].notes, ascending)
       noteIndex = newNoteIndex
-      lastChord = chordList[i]
     }
 
     else {
@@ -80,16 +59,25 @@ U: s=!style=rhythm!
         }
       }
     }
+    // TODO: repetition of some of these if statements feels unnecessary
     // Uses the transpose function so octaves are handled automatically
-    let temp = Note.transpose(lastNote, Interval.distance(lastNote, lastChord.notes[noteIndex!]))
+    let temp = Note.transpose(lastNote, Interval.distance(lastNote, ((curChord.symbol) ? curChord : lastChord).notes[noteIndex!]))
     if (!ascending) temp = Note.transpose(temp, '-8P') // If descending, transpose down an octave as explained above
-    if (Interval.distance(temp, topNote)[0] == '-' || Interval.distance(bottomNote, temp)[0] == '-') {
-      i--
+    if (Interval.distance(temp, topNote)[0] == '-' || Interval.distance(bottomNote, temp)[0] == '-') { // If the new note is outside the range
+      i-- // redo this iteration
       noteIndex += ascending ? -1 : 1
+      // Note to self: figure out how to do this better
+      if (noteIndex>=lastChord.notes.length) { // I'm not using mod later because I might want to add some other conditions with octaves in this case depending on implementation
+        noteIndex = 0
+      }
+      else if (noteIndex<0) {
+        noteIndex = lastChord.notes.length-1
+      }
       ascending = !ascending
       continue
     }
     lastNote = temp
+    if (curChord.symbol) lastChord = curChord
     note = AbcNotation.scientificToAbcNotation(lastNote)
 
     abcString += `${chordStringList[i] && `"${chordStringList[i]}"`}${note || 'sB0'} ` // use short circuiting to only add the chord if it exists
@@ -102,6 +90,20 @@ U: s=!style=rhythm!
 
   console.log(abcString)
   return abcString
+}
+
+const findNearestNote = (lastNote: string, options: string[], ascending: boolean) => {
+  let newNoteDistance = (ascending) ? 13 : -1 // practical infinity
+  let newNoteIndex = -1
+  for (let i=0; i<options.length; i++) {
+    let checkDistance = Interval.semitones(Interval.distance(lastNote, options[i]))
+    if ((ascending && checkDistance < newNoteDistance && checkDistance > 0) || // >0 since don't want duplicate, won't be necessary for descending, see below
+        (!ascending && checkDistance > newNoteDistance)) { // When descending we find the greatest interval, since this will be smallest in the descending direction.
+      newNoteIndex = i
+      newNoteDistance = checkDistance
+    }
+  }
+  return newNoteIndex
 }
 
 const clickHandler = (abcelem: any, tuneNumber: number, classes: string, analysis: any, drag: any) => {
