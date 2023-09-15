@@ -21,43 +21,75 @@ U: s=!style=rhythm!
   // abcString += "|"
 
   const meterNumerator = Number(localExercise.meter.split('/')[0])
-  const bottomNote = Note.get(localExercise.bottomNote)
-  const topNote = Note.get(localExercise.topNote)
+  const bottomNote = localExercise.bottomNote
+  const topNote = localExercise.topNote
   const chordList = chordStringList.map(chordString => Chord.get(chordString))
   // This way makes chord.notes include the octave 
   // const chordList = chordStringList.map(chordString => Chord.getChord(Chord.get(chordString).aliases[0], Chord.get(chordString).tonic + "4"))
   console.log(chordList)
   // console.log(chordList.map(chord => chord.notes.map(note => AbcNotation.scientificToAbcNotation(note)))) // remove the octave from the note
-  console.log(Interval.num(Interval.distance('D4', 'E')))
+  console.log((Interval.distance('D4', 'D3')))
+  console.log(Note.transpose('D4', '-P8'))
   let ascending = true
-  let lastNote = 'A2'
+  let lastNote = 'C4'
   let lastChord = Chord.get('A4')
   let noteIndex = 0
   let note
+  let newNoteIndex
+  let newNoteDistance
 
   for (let i=0; i < chordStringList.length; i++) {
     if (chordList[i].symbol && chordList[i].symbol != lastChord.symbol) {
-      let newNoteIndex
-      let newNoteDistance = 13
-      for (let j=0; j<chordList[i].notes.length; j++) {
-        let checkDistance = Interval.semitones(Interval.distance(lastNote, chordList[i].notes[j]))
-        if (checkDistance < newNoteDistance && checkDistance > 1) { // >0 since don't want duplicate
-          newNoteIndex = j
-          newNoteDistance = checkDistance
+      // Find closest note of new chord to last note
+      if (ascending) {
+        newNoteDistance = 13 // Greater than octave, practical infinity
+        for (let j=0; j<chordList[i].notes.length; j++) {
+          let checkDistance = Interval.semitones(Interval.distance(lastNote, chordList[i].notes[j]))
+          if (checkDistance < newNoteDistance && checkDistance > 0) { // >0 since don't want duplicate
+            newNoteIndex = j
+            newNoteDistance = checkDistance
+          }
         }
+      }
+      else { // When descending we'll find the greatest interval, which will be the closest in the other direction
+        newNoteDistance = -1 // 
+        for (let j=0; j<chordList[i].notes.length; j++) {
+          let checkDistance = Interval.semitones(Interval.distance(lastNote, chordList[i].notes[j]))
+          if (checkDistance > newNoteDistance) { // the >0 check is no longer needed since we're looking for the greatest interval
+            newNoteIndex = j
+            newNoteDistance = checkDistance
+          }
+        }
+
       }
       noteIndex = newNoteIndex
       lastChord = chordList[i]
     }
 
     else {
-      noteIndex++
-      if (noteIndex==lastChord.notes.length) { // I'm not using mod later because I might want to add some other conditions with octaves in this case depending on implementation
-        noteIndex = 0
+      if (ascending) {
+        noteIndex++
+        if (noteIndex>=lastChord.notes.length) { // I'm not using mod later because I might want to add some other conditions with octaves in this case depending on implementation
+          noteIndex = 0
+        }
+      }
+      else {
+        noteIndex--
+        if (noteIndex<0) {
+          noteIndex = lastChord.notes.length-1
+        }
       }
     }
     // Uses the transpose function so octaves are handled automatically
-    lastNote = Note.transpose(lastNote, Interval.distance(lastNote, lastChord.notes[noteIndex!]))
+    let temp = Note.transpose(lastNote, Interval.distance(lastNote, lastChord.notes[noteIndex!]))
+    if (!ascending) temp = Note.transpose(temp, '-8P') // If descending, transpose down an octave as explained above
+    if (Interval.distance(temp, topNote)[0] == '-' || Interval.distance(bottomNote, temp)[0] == '-') {
+      i--
+      noteIndex += ascending ? -1 : 1
+      ascending = !ascending
+      continue
+    }
+    lastNote = temp
     note = AbcNotation.scientificToAbcNotation(lastNote)
 
     abcString += `${chordStringList[i] && `"${chordStringList[i]}"`}${note || 'sB0'} ` // use short circuiting to only add the chord if it exists
