@@ -19,8 +19,7 @@ const lastSaved = ref('')
 let visualObj: any
 if (!route.params.id) {
   localExercise.loadNew()
-}
-else {
+} else {
   const exercise = await pb
     .collection('exercises')
     .getOne(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id, {
@@ -30,20 +29,23 @@ else {
   lastSaved.value = formatDate(exercise.updated)
 
   // Check if the store is empty, will persist for page reload but is cleared after leaving exercise
-  localExercise.loadExisting({
-    exerciseName: exercise.title,
-    clef: exercise.clef,
-    numMeasures: exercise.num_measures,
-    keyTonic: exercise.key_tonic,
-    keyMode: exercise.key_mode,
-    meter: exercise.meter,
-    bottomNote: exercise.bottom_note,
-    topNote: exercise.top_note,
-    exerciseType: exercise.exercise_type,
-    chordsPerMeasure: exercise.chords_per_measure,
-    playbackBpm: exercise.playback_bpm,
-    baseRhythm: exercise.base_rhythm
-  } as ExerciseOptions, exercise.chordString)
+  localExercise.loadExisting(
+    {
+      exerciseName: exercise.title,
+      clef: exercise.clef,
+      numMeasures: exercise.num_measures,
+      keyTonic: exercise.key_tonic,
+      keyMode: exercise.key_mode,
+      meter: exercise.meter,
+      bottomNote: exercise.bottom_note,
+      topNote: exercise.top_note,
+      exerciseType: exercise.exercise_type,
+      chordsPerMeasure: exercise.chords_per_measure,
+      playbackBpm: exercise.playback_bpm,
+      baseRhythm: exercise.base_rhythm
+    } as ExerciseOptions,
+    exercise.chordString
+  )
 }
 
 let computedAbc = computed(() => {
@@ -57,7 +59,7 @@ const toggleSettings = () => {
   if (!showSettings.value) visualObj = loadAbc('exerciseContainer', computedAbc.value)
 }
 
-const saveExercise = async() => {
+const saveExercise = async () => {
   if (!route.params.id) {
     const record = await pb.collection('exercises').create({
       title: localExercise.exerciseName,
@@ -76,24 +78,25 @@ const saveExercise = async() => {
       chordString: localExercise.chords.list.join(',')
     })
     router.push(`/exercise/${record.id}`)
-  }
-
-  else {
-    pb.collection('exercises').update(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id, {
-      title: localExercise.exerciseName,
-      clef: localExercise.clef,
-      num_measures: localExercise.numMeasures,
-      key_tonic: localExercise.keyTonic,
-      key_mode: localExercise.keyMode,
-      meter: localExercise.meter,
-      bottom_note: localExercise.bottomNote,
-      top_note: localExercise.topNote,
-      exercise_type: localExercise.exerciseType,
-      chords_per_measure: localExercise.chordsPerMeasure,
-      playback_bpm: localExercise.playbackBpm,
-      base_rhythm: localExercise.baseRhythm,
-      chordString: localExercise.chords.list.join(',')
-    })
+  } else {
+    pb.collection('exercises').update(
+      Array.isArray(route.params.id) ? route.params.id[0] : route.params.id,
+      {
+        title: localExercise.exerciseName,
+        clef: localExercise.clef,
+        num_measures: localExercise.numMeasures,
+        key_tonic: localExercise.keyTonic,
+        key_mode: localExercise.keyMode,
+        meter: localExercise.meter,
+        bottom_note: localExercise.bottomNote,
+        top_note: localExercise.topNote,
+        exercise_type: localExercise.exerciseType,
+        chords_per_measure: localExercise.chordsPerMeasure,
+        playback_bpm: localExercise.playbackBpm,
+        base_rhythm: localExercise.baseRhythm,
+        chordString: localExercise.chords.list.join(',')
+      }
+    )
   }
   lastSaved.value = formatDate(new Date().toString())
 }
@@ -119,12 +122,16 @@ onMounted(() => {
   <span v-if="lastSaved">Last saved at {{ lastSaved }}</span>
   <span v-if="!userStore.userID">Log in to save exercises</span>
   <button @click="debug">debug</button>
-  
+
   <div id="exerciseContainer"></div>
   <div id="settingsContainer" v-show="showSettings">
     <ExerciseSettings />
   </div>
-  <input type="text" :value="localExercise.chords.list[localExercise.selectedChordIndex]" @change="updateChord">
+  <input
+    type="text"
+    :value="localExercise.chords.list[localExercise.selectedChordIndex]"
+    @change="updateChord"
+  />
 </template>
 
 <style scoped>
