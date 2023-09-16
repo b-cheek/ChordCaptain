@@ -33,6 +33,7 @@ U: s=!style=rhythm!
   const keyAccidentals = new Set(
     alterations <= 0 ? keyFlats.slice(0, -alterations) : keySharps.slice(0, alterations)
   )
+  const notesPerBeat = Number(localExercise.baseRhythm.split('/')[1])/4
   // This way makes chord.notes include the octave
   console.log(
     localExercise.keyMode == 'major'
@@ -52,63 +53,70 @@ U: s=!style=rhythm!
   console.log(accidentals)
 
   for (let i = 0; i < chordStringList.length; i++) {
-    curChord = chordList[i]
-    if (curChord.symbol && curChord.symbol != lastChord.symbol) {
-      // Find closest note of new chord to last note
-      newNoteIndex = findNearestNote(lastNote, chordList[i].notes, ascending)
-      noteIndex = newNoteIndex
-    } else {
-      if (ascending) {
-        noteIndex++
+    for (let j = 0; j < Number(notesPerBeat); j++) {
+      curChord = chordList[i]
+      if (curChord.symbol && curChord.symbol != lastChord.symbol) {
+        // Find closest note of new chord to last note
+        newNoteIndex = findNearestNote(lastNote, chordList[i].notes, ascending)
+        noteIndex = newNoteIndex
+      } else {
+        if (ascending) {
+          noteIndex++
+          if (noteIndex >= lastChord.notes.length) {
+            // I'm not using mod later because I might want to add some other conditions with octaves in this case depending on implementation
+            noteIndex = 0
+          }
+        } else {
+          noteIndex--
+          if (noteIndex < 0) {
+            noteIndex = lastChord.notes.length - 1
+          }
+        }
+      }
+      // TODO: repetition of some of these if statements feels unnecessary
+      let newNote = (curChord.symbol ? curChord : lastChord).notes[noteIndex]
+      let keyNote // The note without any accidentals earlier in the measure or in the key
+      console.log(newNote)
+      // if (accidentals.has(newNote)) {
+      //   newNote = newNote.substring(0, -1) // Remove the accidental
+      // }
+      // else if (['b', '#'].includes(newNote.slice(-1))) { // If note has accidental
+      //   accidentals.add(newNote)
+      // }
+      // Uses the transpose function so octaves are handled automatically
+      let temp = Note.transpose(lastNote, Interval.distance(lastNote, newNote))
+      if (!ascending) temp = Note.transpose(temp, '-8P') // If descending, transpose down an octave as explained above
+      if (
+        Interval.distance(temp, topNote)[0] == '-' ||
+        Interval.distance(bottomNote, temp)[0] == '-'
+      ) {
+        // If the new note is outside the range
+        j-- // redo this iteration
+        noteIndex += ascending ? -1 : 1
+        // Note to self: figure out how to do this better
         if (noteIndex >= lastChord.notes.length) {
           // I'm not using mod later because I might want to add some other conditions with octaves in this case depending on implementation
           noteIndex = 0
-        }
-      } else {
-        noteIndex--
-        if (noteIndex < 0) {
+        } else if (noteIndex < 0) {
           noteIndex = lastChord.notes.length - 1
         }
+        ascending = !ascending
+        continue
       }
-    }
-    // TODO: repetition of some of these if statements feels unnecessary
-    let newNote = (curChord.symbol ? curChord : lastChord).notes[noteIndex]
-    let keyNote // The note without any accidentals earlier in the measure or in the key
-    console.log(newNote)
-    // if (accidentals.has(newNote)) {
-    //   newNote = newNote.substring(0, -1) // Remove the accidental
-    // }
-    // else if (['b', '#'].includes(newNote.slice(-1))) { // If note has accidental
-    //   accidentals.add(newNote)
-    // }
-    // Uses the transpose function so octaves are handled automatically
-    let temp = Note.transpose(lastNote, Interval.distance(lastNote, newNote))
-    if (!ascending) temp = Note.transpose(temp, '-8P') // If descending, transpose down an octave as explained above
-    if (
-      Interval.distance(temp, topNote)[0] == '-' ||
-      Interval.distance(bottomNote, temp)[0] == '-'
-    ) {
-      // If the new note is outside the range
-      i-- // redo this iteration
-      noteIndex += ascending ? -1 : 1
-      // Note to self: figure out how to do this better
-      if (noteIndex >= lastChord.notes.length) {
-        // I'm not using mod later because I might want to add some other conditions with octaves in this case depending on implementation
-        noteIndex = 0
-      } else if (noteIndex < 0) {
-        noteIndex = lastChord.notes.length - 1
-      }
-      ascending = !ascending
-      continue
-    }
-    lastNote = temp
-    if (curChord.symbol) lastChord = curChord
-    note = AbcNotation.scientificToAbcNotation(lastNote)
+      lastNote = temp
+      if (curChord.symbol) lastChord = curChord
+      note = AbcNotation.scientificToAbcNotation(lastNote)
 
-    abcString += `${chordStringList[i] && `"${chordStringList[i]}"`}${note || 'sB0'} ` // use short circuiting to only add the chord if it exists
-    if ((i + 1) % meterNumerator == 0) {
-      abcString += '|'
-      accidentals = keyAccidentals
+      abcString += `${(j==0) // Check that it is a downbeat
+        ? chordStringList[i] && `"${chordStringList[i]}"` 
+        : ''}`
+      abcString += `${note || 'sB0'}` // use short circuiting to only add the chord if it exists
+      abcString += `${j == notesPerBeat - 1 ? ' ' : ''}` // Beam notes in same beat
+      // abcString += `"${i} ${j}"${note || 'sB0'}` // Show beat and sub beat for debugging
+      if ((i + 1) % meterNumerator == 0 && j == notesPerBeat - 1) {
+        abcString += '|'
+        accidentals = keyAccidentals
+      }
     }
   }
   abcString += '|'
