@@ -9,6 +9,7 @@ export const writeAbc = (localExercise: ExerciseOptions, chordStringList: string
 X: 1
 T: ${localExercise.exerciseName}
 K: ${localExercise.keyTonic}${localExercise.keyMode == 'minor' ? 'm' : ''}
+K: clef=${localExercise.clef}
 M: ${localExercise.meter}
 L: ${localExercise.baseRhythm}
 U: s=!style=rhythm!
@@ -52,8 +53,11 @@ U: s=!style=rhythm!
 
   console.log(accidentals)
 
+  let hasChord = false // False until first chord, use slashes until then
+
   for (let i = 0; i < chordStringList.length; i++) {
-    for (let j = 0; j < Number(notesPerBeat); j++) {
+    if (chordStringList[i]) hasChord = true
+    for (let j = 0; j < Number(notesPerBeat) && hasChord; j++) { // hasChord so slashes are only on quarter notes
       curChord = chordList[i]
       if (curChord.symbol && curChord.symbol != lastChord.symbol) {
         // Find closest note of new chord to last note
@@ -110,12 +114,18 @@ U: s=!style=rhythm!
       abcString += `${(j==0) // Check that it is a downbeat
         ? chordStringList[i] && `"${chordStringList[i]}"` 
         : ''}`
-      abcString += `${note || 'sB0'}` // use short circuiting to only add the chord if it exists
+      abcString += `${note}`
       abcString += `${j == notesPerBeat - 1 ? ' ' : ''}` // Beam notes in same beat
       // abcString += `"${i} ${j}"${note || 'sB0'}` // Show beat and sub beat for debugging
       if ((i + 1) % meterNumerator == 0 && j == notesPerBeat - 1) {
         abcString += '|'
         accidentals = keyAccidentals
+      }
+    }
+    if (!hasChord) { // Generate slashes if no chord
+      abcString += `s${(localExercise.clef == 'bass' ? 'D,0' : 'B0')}0 `
+      if ((i + 1) % meterNumerator == 0) {
+        abcString += '|'
       }
     }
   }
