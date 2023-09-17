@@ -1,7 +1,7 @@
 import type { ExerciseOptions } from '@/models/exerciseTypes'
 import { useExerciseStore } from '@/stores/exercise'
 import abcjs from 'abcjs'
-import { Chord, AbcNotation, Note, Interval, Key } from 'tonal'
+import { Chord, AbcNotation, Note, Interval, Key, Scale } from 'tonal'
 import { keyFlats, keySharps } from './applicationConstants'
 
 export const writeAbc = (localExercise: ExerciseOptions, chordStringList: string[]) => {
@@ -25,7 +25,11 @@ U: s=!style=rhythm!
   const meterNumerator = Number(localExercise.meter.split('/')[0])
   const bottomNote = localExercise.bottomNote
   const topNote = localExercise.topNote
-  const chordList = chordStringList.map((chordString) => Chord.get(chordString))
+  const chordList = chordStringList.map(chordString => Chord.get(chordString))
+  const scaleList = (localExercise.exerciseType == 'stepwise') 
+    ? chordList.map(chord => Scale.get(`${chord.tonic} ${Chord.chordScales(chord.symbol)[0]}`))
+    : []
+  const stepwise = localExercise.exerciseType == 'stepwise'
   const alterations = (
     localExercise.keyMode == 'major'
       ? Key.majorKey(localExercise.keyTonic)
@@ -36,15 +40,12 @@ U: s=!style=rhythm!
   )
   const notesPerBeat = Number(localExercise.baseRhythm.split('/')[1])/4
   // This way makes chord.notes include the octave
-  console.log(
-    localExercise.keyMode == 'major'
-      ? Key.majorKey(localExercise.keyTonic)
-      : Key.minorKey(localExercise.keyTonic)
-  )
+  console.log(Scale.get('Bb ' + Chord.chordScales('Bb7')[0]))
+  console.log(Chord.get("Bb7"))
 
   let ascending = true
   let lastNote = 'C4'
-  let lastChord = Chord.get('A4')
+  let lastChord = (stepwise) ? Scale.get('A major') : Chord.get('A7')
   let noteIndex = 0
   let note
   let newNoteIndex
@@ -58,10 +59,14 @@ U: s=!style=rhythm!
   for (let i = 0; i < chordStringList.length; i++) {
     if (chordStringList[i]) hasChord = true
     for (let j = 0; j < Number(notesPerBeat) && hasChord; j++) { // hasChord so slashes are only on quarter notes
-      curChord = chordList[i]
-      if (curChord.symbol && curChord.symbol != lastChord.symbol) {
+      curChord = (stepwise) ? scaleList[i] : chordList[i]
+      if (curChord.name && curChord.name != lastChord.name) {
         // Find closest note of new chord to last note
-        newNoteIndex = findNearestNote(lastNote, chordList[i].notes, ascending)
+        newNoteIndex = findNearestNote(lastNote, 
+          (stepwise
+            ? scaleList 
+            : chordList)
+        [i].notes, ascending)
         noteIndex = newNoteIndex
       } else {
         if (ascending) {
@@ -78,7 +83,7 @@ U: s=!style=rhythm!
         }
       }
       // TODO: repetition of some of these if statements feels unnecessary
-      let newNote = (curChord.symbol ? curChord : lastChord).notes[noteIndex]
+      let newNote = (curChord.name ? curChord : lastChord).notes[noteIndex]
       let keyNote // The note without any accidentals earlier in the measure or in the key
       console.log(newNote)
       // if (accidentals.has(newNote)) {
@@ -108,7 +113,7 @@ U: s=!style=rhythm!
         continue
       }
       lastNote = temp
-      if (curChord.symbol) lastChord = curChord
+      if (curChord.name) lastChord = curChord
       note = AbcNotation.scientificToAbcNotation(lastNote)
 
       abcString += `${(j==0) // Check that it is a downbeat

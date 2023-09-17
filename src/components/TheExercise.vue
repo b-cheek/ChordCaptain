@@ -29,23 +29,25 @@ if (!route.params.id) {
   lastSaved.value = formatDate(exercise.updated)
 
   // Check if the store is empty, will persist for page reload but is cleared after leaving exercise
-  localExercise.loadExisting(
-    {
-      exerciseName: exercise.title,
-      clef: exercise.clef,
-      numMeasures: exercise.num_measures,
-      keyTonic: exercise.key_tonic,
-      keyMode: exercise.key_mode,
-      meter: exercise.meter,
-      bottomNote: exercise.bottom_note,
-      topNote: exercise.top_note,
-      exerciseType: exercise.exercise_type,
-      chordsPerMeasure: exercise.chords_per_measure,
-      playbackBpm: exercise.playback_bpm,
-      baseRhythm: exercise.base_rhythm
-    } as ExerciseOptions,
-    exercise.chordString
-  )
+  if (!localExercise.exerciseName) {
+    localExercise.loadExisting(
+      {
+        exerciseName: exercise.title,
+        clef: exercise.clef,
+        numMeasures: exercise.num_measures,
+        keyTonic: exercise.key_tonic,
+        keyMode: exercise.key_mode,
+        meter: exercise.meter,
+        bottomNote: exercise.bottom_note,
+        topNote: exercise.top_note,
+        exerciseType: exercise.exercise_type,
+        chordsPerMeasure: exercise.chords_per_measure,
+        playbackBpm: exercise.playback_bpm,
+        baseRhythm: exercise.base_rhythm
+      } as ExerciseOptions,
+      exercise.chordString
+    )
+  }
 }
 
 let computedAbc = computed(() => {
