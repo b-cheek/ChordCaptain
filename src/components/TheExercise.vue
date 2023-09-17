@@ -17,8 +17,10 @@ const localExercise = useExerciseStore()
 const userStore = useUserStore()
 const lastSaved = ref('')
 let visualObj: any
-if (!route.params.id) {
-  localExercise.loadNew()
+if (!route.params.id) { // Double nested if so the else only occurs when the exercise is saved
+  if (!localExercise.exerciseName) {
+    localExercise.loadNew()
+  }
 } else {
   const exercise = await pb
     .collection('exercises')
@@ -107,10 +109,15 @@ const updateChord = (event: any) => {
   localExercise.chords.list[localExercise.selectedChordIndex] = event.target.value
   localExercise.selectedChordIndex = -1
   visualObj = loadAbc('exerciseContainer', computedAbc.value)
+  event.target.style.display = 'none'
+}
+
+const hideInput = (event: any) => {
+  event.target.style.display = 'none'
 }
 
 const debug = () => {
-  console.log(localExercise.selectedChordIndex)
+  console.log(visualObj)
 }
 
 onMounted(() => {
@@ -130,10 +137,12 @@ onMounted(() => {
     <ExerciseSettings />
   </div>
   <input
+    id="chordInput"
     type="text"
     :value="localExercise.chords.list[localExercise.selectedChordIndex]"
     @change="updateChord"
-  />
+    @blur="hideInput" 
+  /> <!-- blur is so the input box disappears when the user clicks away from the chord without changing value-->
 </template>
 
 <style scoped>
@@ -151,5 +160,16 @@ onMounted(() => {
   padding: 2rem;
   border: 1px black solid;
   border-radius: 1em;
+}
+
+#chordInput {
+  display: none;
+  position: absolute;
+  width: auto;
+}
+
+.abcjs-text {
+  stroke: red;
+  fill: red;
 }
 </style>

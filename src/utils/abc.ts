@@ -117,7 +117,7 @@ U: s=!style=rhythm!
       note = AbcNotation.scientificToAbcNotation(lastNote)
 
       abcString += `${(j==0) // Check that it is a downbeat
-        ? chordStringList[i] && `"${chordStringList[i]}"` 
+        ? (chordStringList[i]) ? `"${chordStringList[i]}"` : `"ㅤ"` // Invisible character so chord height can be used for input
         : ''}`
       abcString += `${note}`
       abcString += `${j == notesPerBeat - 1 ? ' ' : ''}` // Beam notes in same beat
@@ -128,7 +128,7 @@ U: s=!style=rhythm!
       }
     }
     if (!hasChord) { // Generate slashes if no chord
-      abcString += `s${(localExercise.clef == 'bass' ? 'D,0' : 'B0')}0 `
+      abcString += `s${(localExercise.clef == 'bass' ? '"ㅤ"D,0' : '"ㅤ"B0')}0 `
       if ((i + 1) % meterNumerator == 0) {
         abcString += '|'
       }
@@ -179,12 +179,25 @@ const clickHandler = (
     drag
   )
   const classList = classes.split(' ')
-  console.log(classList[5], classList[7])
   const exercise = useExerciseStore()
-  const index =
-    Number(classList[5].slice(8)) * Number(exercise.meter.split('/')[0]) +
-    Number(classList[7].slice(7))
+  const notesPerBeat = Number(exercise.baseRhythm.split('/')[1])/4
+  const measureNum = Number(classList[5].slice(8))
+  const noteNum = Number(classList[7].slice(7))
+  const meterNumerator = Number(exercise.meter.split('/')[0])
+  let index = measureNum * meterNumerator + noteNum // Measure number * notes per measure
   exercise.selectedChordIndex = index
+  const input = document.getElementById('chordInput')
+  if (input) {
+    input.style.display = 'block'
+    input.focus()
+    console.log("AAAA", abcelem.abselem.children.filter((child) => child.c?.includes("ㅤ")))
+    // console.log("AAAA", abcelem.abselem.children[0].c.includes('a'))
+    // const chordElRect = abcelem.abselem.children.filter(child => child.c.includes`\\`)[0].graphelem.getBoundingClientRect()
+    const chordElRect = abcelem.abselem.children.at(-1).graphelem.getBoundingClientRect()
+    console.log(chordElRect)
+    input.style.left = `${chordElRect.left}px`
+    input.style.top = `${chordElRect.top - chordElRect.height/4}px`
+  }
 }
 
 export const loadAbc = (target: string, abcString: string) => {
