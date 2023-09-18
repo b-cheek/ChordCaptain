@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import pb from '@/database/db'
 import router from '@/router/router'
 import { useUserStore } from '@/stores/user'
+import BackButton from '@/components/TheBackButton.vue'
 
 const userStore = useUserStore()
 
@@ -32,6 +33,7 @@ async function register() {
 </script>
 
 <template>
+  <BackButton to="" />
   <form @submit.prevent="register">
     <label for="email">Email</label>
     <input type="email" id="email" v-model="email" required />

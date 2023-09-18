@@ -201,6 +201,7 @@ const clickHandler = (
 }
 
 export const loadAbc = (target: string, abcString: string) => {
+  console.log(1000/window.innerWidth)
   return abcjs.renderAbc(target, abcString, {
     wrap: {
       minSpacing: 1.8, // Values from docs: https://paulrosen.github.io/abcjs/visual/render-abc-options.html#wrap
@@ -210,7 +211,9 @@ export const loadAbc = (target: string, abcString: string) => {
     // Staffwidth MUST be set for wrap to work. It is overridden by the responsive option.
     // Also note that we are guaranteeing that 'exerciseContainer' is mounted by using onMounted
     staffwidth: document.getElementById('exerciseContainer')!.clientWidth * 0.95,
-    responsive: 'resize',
+    // staffwidth: 1000,
+    // responsive: 'resize',
+    scale: window.innerWidth/1000,
     // oneSvgPerLine: true,  // turning this on helps some stuff, but messes up showDebug
     // showDebug: ['grid', 'box'],
     // selectTypes: [],

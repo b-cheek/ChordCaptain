@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router'
 import { useExerciseStore } from '@/stores/exercise'
 import { useUserStore } from '@/stores/user'
 import SettingsIcon from '@/components/icons/IconSettings.vue'
+import BackButton from '@/components/TheBackButton.vue'
 import ExerciseSettings from '@/components/TheExerciseSettings.vue'
 import type { ExerciseOptions } from '@/models/exerciseTypes'
 import { formatDate } from '@/utils/formatting'
@@ -126,11 +127,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <button @click="toggleSettings" id="settingsButton"><SettingsIcon /></button>
+  <BackButton to="''" />
   <button @click="saveExercise" :disabled="!userStore.userID">Save</button>
+  <button @click="toggleSettings" id="settingsButton"><SettingsIcon /></button>
   <span v-if="lastSaved">Last saved at {{ lastSaved }}</span>
   <span v-if="!userStore.userID">Log in to save exercises</span>
-  <button @click="debug">debug</button>
+  <!-- <button @click="debug" style="display: block;">debug</button> -->
+  <div display="block" style="height:10px"></div> <!-- Removing this adds a margin under the floated right settings button >:(-->
 
   <div id="exerciseContainer"></div>
   <div id="settingsContainer" v-show="showSettings">
@@ -146,6 +149,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
+
 #settingsButton {
   float: right;
 }

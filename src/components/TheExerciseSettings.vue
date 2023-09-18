@@ -15,8 +15,8 @@ const exercise = useExerciseStore()
     <label for="treble">Treble</label>
     <input type="radio" id="bass" name="clef" value="bass" v-model="exercise.clef" />
     <label for="bass">Bass</label>
-    <input type="radio" id="grandStaff" name="clef" value="grand_staff" v-model="exercise.clef" />
-    <label for="grandStaff">Grand Staff</label>
+    <!-- <input type="radio" id="grandStaff" name="clef" value="grand_staff" v-model="exercise.clef" />
+    <label for="grandStaff">Grand Staff</label> -->
   </fieldset>
   <label for="numMeasures">Number of Measures</label>
   <input id="numMeasures" type="number" v-model.number="exercise.numMeasures" />
@@ -37,7 +37,7 @@ const exercise = useExerciseStore()
     <option value="4/4">4/4</option>
     <option value="3/4">3/4</option>
     <option value="2/4">2/4</option>
-    <option value="2/2">2/2</option>
+    <!-- <option value="2/2">2/2</option> -->
     <option value="5/4">5/4</option>
   </select>
   <fieldset>
@@ -47,7 +47,7 @@ const exercise = useExerciseStore()
     <label for="topNote">Top Note</label>
     <input id="topNote" type="text" v-model="exercise.topNote" />
   </fieldset>
-  <span>or</span>
+  <!-- <span>or</span>
   <label for="instrument">Instrument</label>
   <select id="instrument">
     <option value="Alto Saxophone">Alto Saxophone</option>
@@ -61,7 +61,7 @@ const exercise = useExerciseStore()
     <option value="Piano">Piano</option>
     <option value="Guitar">Guitar</option>
     <option value="Bass">Bass</option>
-  </select>
+  </select> -->
   <fieldset>
     <legend>Exercise Type</legend>
     <input
@@ -80,16 +80,16 @@ const exercise = useExerciseStore()
       v-model="exercise.exerciseType"
     />
     <label for="arpeggiated">Arpeggiated</label>
-    <input
+    <!-- <input
       type="radio"
       id="mixed"
       name="exerciseType"
       value="mixed"
       v-model="exercise.exerciseType"
     />
-    <label for="mixed">Mixed</label>
+    <label for="mixed">Mixed</label> -->
   </fieldset>
-  <fieldset>
+  <!-- <fieldset>
     <legend>Chords Per Measure</legend>
     <input
       type="radio"
@@ -115,9 +115,9 @@ const exercise = useExerciseStore()
       v-model="exercise.chordsPerMeasure"
     />
     <label for="custom">Custom</label>
-  </fieldset>
-  <label for="playbackBpm">Playback BPM</label>
-  <input id="playbackBpm" type="number" v-model.number="exercise.playbackBpm" />
+  </fieldset> -->
+  <!-- <label for="playbackBpm">Playback BPM</label>
+  <input id="playbackBpm" type="number" v-model.number="exercise.playbackBpm" /> -->
   <fieldset>
     <legend>Rhythm</legend>
     <input type="radio" id="8" name="rhythm" value="1/8" v-model="exercise.baseRhythm" />
@@ -130,4 +130,8 @@ const exercise = useExerciseStore()
   <!-- </form> -->
 </template>
 
-<style scoped></style>
+<style scoped>
+* {
+  font-size: 0.75em;
+}
+</style>

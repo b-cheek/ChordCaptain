@@ -1,7 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import BackButton from '@/components/TheBackButton.vue'
+</script>
 
 <template>
   <header>
+    <BackButton to="" />
     <h1>About</h1>
   </header>
 
