@@ -127,7 +127,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <BackButton to="''" />
+  <BackButton :callback="localExercise.clear" to="" />
   <button @click="saveExercise" :disabled="!userStore.userID">Save</button>
   <button @click="toggleSettings" id="settingsButton"><SettingsIcon /></button>
   <span v-if="lastSaved">Last saved at {{ lastSaved }}</span>

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inclusive+Sans&display=swap');
+
 *,
 *::before,
 *::after {
@@ -10,4 +12,8 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1, a, button, input, label, p, span, strong, textarea {
+  font-family: 'Inclusive Sans', Arial, Helvetica, sans-serif;
 }

@@ -42,7 +42,7 @@ const deleteExercise = async () => {
 
 <template>
   <tr ref="row" @click="goToExercise">
-    <td>{{ formatDate(exercise.created) }}</td>
+    <!-- <td>{{ formatDate(exercise.created) }}</td> -->
     <td>{{ formatDate(exercise.updated) }}</td>
     <td>{{ exercise.title }}</td>
     <td>{{ exercise.key_tonic }} {{ exercise.key_mode }}</td>

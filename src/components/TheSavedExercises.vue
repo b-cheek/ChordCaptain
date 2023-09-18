@@ -25,7 +25,7 @@ onMounted(() => {
   <table id="savedExercises">
     <thead>
       <tr>
-        <th>Created</th>
+        <!-- <th>Created</th> -->
         <th>Updated</th>
         <th>Title</th>
         <th>Key</th>
@@ -51,4 +51,9 @@ onMounted(() => {
   <p v-if="savedExercises.length === 0">No saved exercises</p>
 </template>
 
-<style scoped></style>
+<style scoped>
+table {
+  width: 100%;
+  margin: 0 2% 0 2%;
+}
+</style>

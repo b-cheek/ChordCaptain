@@ -3,6 +3,11 @@ import backIcon from '@/components/icons/IconBack.vue'
 import { useRouter } from 'vue-router'
 
 const props = defineProps({
+    callback: {
+        type: Function,
+        required: false
+    },
+
     to: {
         type: String,
         required: true
@@ -11,14 +16,17 @@ const props = defineProps({
 
 const router = useRouter()
 
-const goBack = () => {
+const backBehavior = () => {
+    if (props.callback) {
+        props.callback()
+    }
     router.push(`/${props.to}`)
 }
 
 </script>
 
 <template>
-    <button @click="goBack">
+    <button @click="backBehavior">
         <backIcon />
     </button>
 </template>
