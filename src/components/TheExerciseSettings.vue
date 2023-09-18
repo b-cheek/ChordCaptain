@@ -132,6 +132,12 @@ const exercise = useExerciseStore()
 
 <style scoped>
 * {
-  font-size: 0.75em;
+  font-size: 3vh;
+}
+
+@media screen and (max-height: 515px) {
+  * {
+    font-size: 2.5vh;
+  }
 }
 </style>

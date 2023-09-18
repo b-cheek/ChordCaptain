@@ -18,7 +18,8 @@ const localExercise = useExerciseStore()
 const userStore = useUserStore()
 const lastSaved = ref('')
 let visualObj: any
-if (!route.params.id) { // Double nested if so the else only occurs when the exercise is saved
+if (!route.params.id) {
+  // Double nested if so the else only occurs when the exercise is saved
   if (!localExercise.exerciseName) {
     localExercise.loadNew()
   }
@@ -133,7 +134,8 @@ onMounted(() => {
   <span v-if="lastSaved">Last saved at {{ lastSaved }}</span>
   <span v-if="!userStore.userID">Log in to save exercises</span>
   <!-- <button @click="debug" style="display: block;">debug</button> -->
-  <div display="block" style="height:10px"></div> <!-- Removing this adds a margin under the floated right settings button >:(-->
+  <div display="block" style="height: 10px"></div>
+  <!-- Removing this adds a margin under the floated right settings button >:(-->
 
   <div id="exerciseContainer"></div>
   <div id="settingsContainer" v-show="showSettings">
@@ -144,12 +146,12 @@ onMounted(() => {
     type="text"
     :value="localExercise.chords.list[localExercise.selectedChordIndex]"
     @change="updateChord"
-    @blur="hideInput" 
-  /> <!-- blur is so the input box disappears when the user clicks away from the chord without changing value-->
+    @blur="hideInput"
+  />
+  <!-- blur is so the input box disappears when the user clicks away from the chord without changing value-->
 </template>
 
 <style scoped>
-
 #settingsButton {
   float: right;
 }
@@ -169,7 +171,7 @@ onMounted(() => {
 #chordInput {
   display: none;
   position: absolute;
-  width: auto;
+  width: 5em;
 }
 
 .abcjs-text {

@@ -25,10 +25,11 @@ U: s=!style=rhythm!
   const meterNumerator = Number(localExercise.meter.split('/')[0])
   const bottomNote = localExercise.bottomNote
   const topNote = localExercise.topNote
-  const chordList = chordStringList.map(chordString => Chord.get(chordString))
-  const scaleList = (localExercise.exerciseType == 'stepwise') 
-    ? chordList.map(chord => Scale.get(`${chord.tonic} ${Chord.chordScales(chord.symbol)[0]}`))
-    : []
+  const chordList = chordStringList.map((chordString) => Chord.get(chordString))
+  const scaleList =
+    localExercise.exerciseType == 'stepwise'
+      ? chordList.map((chord) => Scale.get(`${chord.tonic} ${Chord.chordScales(chord.symbol)[0]}`))
+      : []
   const stepwise = localExercise.exerciseType == 'stepwise'
   const alterations = (
     localExercise.keyMode == 'major'
@@ -38,14 +39,14 @@ U: s=!style=rhythm!
   const keyAccidentals = new Set(
     alterations <= 0 ? keyFlats.slice(0, -alterations) : keySharps.slice(0, alterations)
   )
-  const notesPerBeat = Number(localExercise.baseRhythm.split('/')[1])/4
+  const notesPerBeat = Number(localExercise.baseRhythm.split('/')[1]) / 4
   // This way makes chord.notes include the octave
   console.log(Scale.get('Bb ' + Chord.chordScales('Bb7')[0]))
-  console.log(Chord.get("Bb7"))
+  console.log(Chord.get('Bb7'))
 
   let ascending = true
   let lastNote = 'C4'
-  let lastChord = (stepwise) ? Scale.get('A major') : Chord.get('A7')
+  let lastChord = stepwise ? Scale.get('A major') : Chord.get('A7')
   let noteIndex = 0
   let note
   let newNoteIndex
@@ -58,15 +59,16 @@ U: s=!style=rhythm!
 
   for (let i = 0; i < chordStringList.length; i++) {
     if (chordStringList[i]) hasChord = true
-    for (let j = 0; j < Number(notesPerBeat) && hasChord; j++) { // hasChord so slashes are only on quarter notes
-      curChord = (stepwise) ? scaleList[i] : chordList[i]
+    for (let j = 0; j < Number(notesPerBeat) && hasChord; j++) {
+      // hasChord so slashes are only on quarter notes
+      curChord = stepwise ? scaleList[i] : chordList[i]
       if (curChord.name && curChord.name != lastChord.name) {
         // Find closest note of new chord to last note
-        newNoteIndex = findNearestNote(lastNote, 
-          (stepwise
-            ? scaleList 
-            : chordList)
-        [i].notes, ascending)
+        newNoteIndex = findNearestNote(
+          lastNote,
+          (stepwise ? scaleList : chordList)[i].notes,
+          ascending
+        )
         noteIndex = newNoteIndex
       } else {
         if (ascending) {
@@ -116,9 +118,13 @@ U: s=!style=rhythm!
       if (curChord.name) lastChord = curChord
       note = AbcNotation.scientificToAbcNotation(lastNote)
 
-      abcString += `${(j==0) // Check that it is a downbeat
-        ? (chordStringList[i]) ? `"${chordStringList[i]}"` : `"ㅤ"` // Invisible character so chord height can be used for input
-        : ''}`
+      abcString += `${
+        j == 0 // Check that it is a downbeat
+          ? chordStringList[i]
+            ? `"${chordStringList[i]}"`
+            : `"ㅤ"` // Invisible character so chord height can be used for input
+          : ''
+      }`
       abcString += `${note}`
       abcString += `${j == notesPerBeat - 1 ? ' ' : ''}` // Beam notes in same beat
       // abcString += `"${i} ${j}"${note || 'sB0'}` // Show beat and sub beat for debugging
@@ -127,8 +133,9 @@ U: s=!style=rhythm!
         accidentals = keyAccidentals
       }
     }
-    if (!hasChord) { // Generate slashes if no chord
-      abcString += `s${(localExercise.clef == 'bass' ? '"ㅤ"D,0' : '"ㅤ"B0')}0 `
+    if (!hasChord) {
+      // Generate slashes if no chord
+      abcString += `s${localExercise.clef == 'bass' ? '"ㅤ"D,0' : '"ㅤ"B0'}0 `
       if ((i + 1) % meterNumerator == 0) {
         abcString += '|'
       }
@@ -180,7 +187,7 @@ const clickHandler = (
   )
   const classList = classes.split(' ')
   const exercise = useExerciseStore()
-  const notesPerBeat = Number(exercise.baseRhythm.split('/')[1])/4
+  const notesPerBeat = Number(exercise.baseRhythm.split('/')[1]) / 4
   const measureNum = Number(classList[5].slice(8))
   const noteNum = Number(classList[7].slice(7))
   const meterNumerator = Number(exercise.meter.split('/')[0])
@@ -190,18 +197,21 @@ const clickHandler = (
   if (input) {
     input.style.display = 'block'
     input.focus()
-    console.log("AAAA", abcelem.abselem.children.filter((child) => child.c?.includes("ㅤ")))
+    console.log(
+      'AAAA',
+      abcelem.abselem.children.filter((child) => child.c?.includes('ㅤ'))
+    )
     // console.log("AAAA", abcelem.abselem.children[0].c.includes('a'))
     // const chordElRect = abcelem.abselem.children.filter(child => child.c.includes`\\`)[0].graphelem.getBoundingClientRect()
     const chordElRect = abcelem.abselem.children.at(-1).graphelem.getBoundingClientRect()
     console.log(chordElRect)
     input.style.left = `${chordElRect.left}px`
-    input.style.top = `${chordElRect.top - chordElRect.height/4}px`
+    input.style.top = `${chordElRect.top - chordElRect.height / 4}px`
   }
 }
 
 export const loadAbc = (target: string, abcString: string) => {
-  console.log(1000/window.innerWidth)
+  console.log(1000 / window.innerWidth)
   return abcjs.renderAbc(target, abcString, {
     wrap: {
       minSpacing: 1.8, // Values from docs: https://paulrosen.github.io/abcjs/visual/render-abc-options.html#wrap
@@ -213,7 +223,7 @@ export const loadAbc = (target: string, abcString: string) => {
     staffwidth: document.getElementById('exerciseContainer')!.clientWidth * 0.95,
     // staffwidth: 1000,
     // responsive: 'resize',
-    scale: window.innerWidth/1000,
+    scale: window.innerWidth / 1000,
     // oneSvgPerLine: true,  // turning this on helps some stuff, but messes up showDebug
     // showDebug: ['grid', 'box'],
     // selectTypes: [],

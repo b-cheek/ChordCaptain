@@ -14,6 +14,28 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, a, button, input, label, p, span, strong, textarea {
+h1,
+a,
+button,
+input,
+label,
+p,
+span,
+strong,
+textarea {
   font-family: 'Inclusive Sans', Arial, Helvetica, sans-serif;
+}
+
+button {
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: 0.25em;
+  background-color: transparent;
+  padding: 0.5em;
+}
+
+button:hover,
+button:focus {
+  cursor: pointer;
+  border: 1px solid black;
 }
